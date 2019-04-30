@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "default": "project-id",
+    "runtime": "nodejs8"
+  }
+}
