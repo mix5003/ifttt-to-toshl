@@ -3,7 +3,7 @@ import * as admin from 'firebase-admin';
 import * as request from 'request-promise';
 import * as functions from 'firebase-functions';
 
-const accessToken = functions.config().toshl.token;
+const accessToken = functions.config().toshl ? functions.config().toshl.token : null;
 
 export const refreshCacheData = async function(db: admin.firestore.Firestore){
     const categories = await request({

@@ -43,6 +43,23 @@ export const refreshCache = functions.https.onRequest((request, response) => {
     })
 });
 
-export const citibank = createReqtestFunction('Citibank', functions.config().accounts.citibank, citiExtractor);
-export const kplus = createReqtestFunction('K Plus', functions.config().accounts.kplus, kPlusExtractor);
-export const trueMoney = createReqtestFunction('TrueMoney', functions.config().accounts.truemoney, trueMoneyExtractor);
+const accountConfigs = functions.config().accounts || {};
+const citibankFn = createReqtestFunction('Citibank', accountConfigs.citibank, citiExtractor);
+const kplusFn = createReqtestFunction('K Plus', accountConfigs.kplus, kPlusExtractor);
+const trueMoneyFn = createReqtestFunction('TrueMoney', accountConfigs.truemoney, trueMoneyExtractor);
+
+export const api = functions.https.onRequest((request, response) => {
+    switch(request.path){
+        case '/citibank':
+            return citibankFn(request, response);
+        case '/kplus':
+            return kplusFn(request, response);
+        case '/trueMoney':
+            return trueMoneyFn(request, response);
+        default: break;
+    }
+    response.send(JSON.stringify({
+        params: request.params,
+        path: request.path
+    }));
+});
