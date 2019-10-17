@@ -13,6 +13,7 @@ This project is for extract transaction from push notification message and SMS f
 firebase functions:config:set accounts.kplus=TOSHL_KPLUS_ACCOUNT_ID
 firebase functions:config:set accounts.truemoney=TOSHL_TRUEMONEY_ACCOUNT_ID
 firebase functions:config:set accounts.citibank=TOSHL_CITIBANK_ACCOUNT_ID
+firebase functions:config:set accounts.mymo=TOSHL_CITIBANK_ACCOUNT_ID
 firebase functions:config:set toshl.token="YOUR_TOSHL_TOKEN"
 npm run deploy
 ```
@@ -24,7 +25,7 @@ npm run deploy
 # IFTTT Applet
 ## TrueMoney 
 
-**Then:**
+**This:**
 - Service: Android SMS
 - Trigger: New SMS received matches search
 - Keywords: ชำระเงิน
@@ -38,7 +39,7 @@ npm run deploy
 - Body: {{Text}} - {{FromNumber}}
 
 ## Citibank 
-**Then:**
+**This:**
 - Service: Android SMS
 - Trigger: New SMS received matches search
 - Keywords: Your last 4 digits of credit card
@@ -52,7 +53,7 @@ npm run deploy
 - Body: {{Text}} - {{FromNumber}}
 
 ## KPlus
-**Then:**
+**This:**
 - Service: Android Device
 - Trigger: Notification received from a specific app
 - App Name: K PLUS
@@ -61,6 +62,20 @@ npm run deploy
 - Service: Webhook
 - Action: Make a web request
 - URL: Your KPlus firebase url
+- Method: POST
+- Content-type: text/plain
+- Body: {{NotificationTitle}} {{NotificationMessage}}
+
+## MyMoLotto (Untested)
+**This:**
+- Service: Android Device
+- Trigger: Notification received from a specific app
+- App Name: MyMo
+
+**That**
+- Service: Webhook
+- Action: Make a web request
+- URL: Your MyMoLotto firebase url
 - Method: POST
 - Content-type: text/plain
 - Body: {{NotificationTitle}} {{NotificationMessage}}

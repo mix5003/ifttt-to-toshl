@@ -4,6 +4,7 @@ import { createTransaction, refreshCacheData } from './toshl';
 import citiExtractor from './extractor/citi.extractor';
 import kPlusExtractor from './extractor/k-plus.extractor';
 import trueMoneyExtractor from './extractor/true-money.extractor';
+import myMoLottoExtractor from './extractor/mymo-lotto.extractor';
 
 admin.initializeApp();
 
@@ -47,6 +48,7 @@ const accountConfigs = functions.config().accounts || {};
 const citibankFn = createReqtestFunction('Citibank', accountConfigs.citibank, citiExtractor);
 const kplusFn = createReqtestFunction('K Plus', accountConfigs.kplus, kPlusExtractor);
 const trueMoneyFn = createReqtestFunction('TrueMoney', accountConfigs.truemoney, trueMoneyExtractor);
+const myMoLottoFn = createReqtestFunction('MyMo', accountConfigs.mymo, myMoLottoExtractor);
 
 export const api = functions.https.onRequest((request, response) => {
     switch(request.path){
@@ -56,6 +58,8 @@ export const api = functions.https.onRequest((request, response) => {
             return kplusFn(request, response);
         case '/trueMoney':
             return trueMoneyFn(request, response);
+        case '/mymo-lotto':
+            return myMoLottoFn(request, response);
         default: break;
     }
     response.send(JSON.stringify({
