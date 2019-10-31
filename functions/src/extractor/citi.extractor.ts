@@ -28,7 +28,7 @@ export default function(text: string): Transaction{
             }
         }
     }else if(text.includes('has been charged')){
-        const result = text.match('Your Credit Card ending [0-9]{4} has been charged ([A-Z]+) ([-.,0-9]+)');
+        const result = text.match('Card ending [0-9]{4} has been charged ([A-Z]+) ([-.,0-9]+)');
         if(result){
             return {
                 amount: -1 * +(result[2].replace(/,/g,'')),

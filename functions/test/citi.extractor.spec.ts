@@ -43,6 +43,16 @@ describe(' Extractor', () => {
     });
   });
 
+  it('should return correct value from offline charged expense transaction', () => {
+    const result = extractor('Your Citi Credit Card ending 2737 has been charged THB 1,845.00 on 31-Oct at AIA THAILANDT003. - ');
+    expect(result).to.contain({
+      amount: -1845,
+      type: 'EXPENSE',
+      currency: 'THB',
+      category: 'Uncategorized'
+    });
+  });
+
   it('should return correct value from income transaction', () => {
     const result = extractor('ธนาคารซิตี้แบงค์ขอบพระคุณที่ชำระยอด 3,000.0 บ. สำหรับบัตรเครดิต...');
     expect(result).to.contain({
