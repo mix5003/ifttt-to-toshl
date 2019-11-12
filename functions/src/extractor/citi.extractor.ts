@@ -18,7 +18,7 @@ export default function(text: string): Transaction{
             }
         }
     }else if(text.includes('Online Transaction amount')){
-        const result = text.match('Online Transaction amount ([A-Z]+)\s*([-.,0-9]+)');
+        const result = text.match('Online Transaction amount ([A-Z]+)\\s*([-.,0-9]+)');
         if(result){
             return {
                 amount: -1 * +(result[2].replace(/,/g,'')),

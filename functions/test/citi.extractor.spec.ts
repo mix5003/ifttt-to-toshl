@@ -4,7 +4,7 @@ import extractor from '../src/extractor/citi.extractor';
 // if you used the '@types/mocha' method to install mocha type definitions, uncomment the following line
 // import 'mocha';
 
-describe(' Extractor', () => {
+describe('Citi Extractor', () => {
   it('should return correct value from expense transaction', () => {
     const result = extractor('ขอบคุณที่ใช้จ่าย 714  บาท ผ่านบัตรเครดิตซิตี้เลขท้าย 2737  ผ่าน xxxx   โปรโมชั่นพิเศษสำหรับการแลกคะแนนสะสมซิตี้ รีวอร์ดเพื่อรับเครดิตเงินคืน คลิก opp โปรโมชั่นนี้มีอายุ 24 ชั่วโมง หลังจากได้รับข้อความนี้เท่านั้น');
     expect(result).to.contain({
