@@ -13,7 +13,8 @@ This project is for extract transaction from push notification message and SMS f
 firebase functions:config:set accounts.kplus=TOSHL_KPLUS_ACCOUNT_ID
 firebase functions:config:set accounts.truemoney=TOSHL_TRUEMONEY_ACCOUNT_ID
 firebase functions:config:set accounts.citibank=TOSHL_CITIBANK_ACCOUNT_ID
-firebase functions:config:set accounts.mymo=TOSHL_CITIBANK_ACCOUNT_ID
+firebase functions:config:set accounts.mymo=TOSHL_MYMO_ACCOUNT_ID
+firebase functions:config:set accounts.ktc=TOSHL_KTC_ACCOUNT_ID
 firebase functions:config:set toshl.token="YOUR_TOSHL_TOKEN"
 npm run deploy
 ```
@@ -79,3 +80,20 @@ npm run deploy
 - Method: POST
 - Content-type: text/plain
 - Body: {{NotificationTitle}} {{NotificationMessage}}
+
+## KTC Online (Push Notification)
+If you want you can change to SMS triggers. But sometime KTC will double send SMS. I Think it KTC retry process when SMS. And I think SMS will notfication if amount more than 100 THB.
+**This:**
+- Service: Android Device
+- Trigger: Notification received from a specific app
+- App Name: KTC Mobile
+- Keyword (not necessary): Your last 4 digits of credit card
+
+**That**
+- Service: Webhook
+- Action: Make a web request
+- URL: Your KTC firebase url
+- Method: POST
+- Content-type: text/plain
+- Body: {{NotificationTitle}} {{NotificationMessage}}
+
