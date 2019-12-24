@@ -62,7 +62,7 @@ export const createTransaction = async function(account: string, transaction: Tr
         tags: transactionTags,
     };
 
-    console.log(entry);
+    console.log(JSON.stringify(entry));
 
     const response = await request({
         url: 'https://api.toshl.com/entries',
