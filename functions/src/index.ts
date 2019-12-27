@@ -15,10 +15,11 @@ const collectionRef = db.collection('raws');
 
 const createReqtestFunction = (type:string, accountId: string, extractor: Function) => {
     return  functions.https.onRequest((request, response) => {
-        collectionRef.add({
+        const refId = (new Date).toISOString();
+        collectionRef.doc(refId).set({
             text: request.body.toString(),
             type,
-        }).then((snapshot) => {
+        }).then(_ => {
             console.log(typeof request.body.toString(), request.body.toString())
             response.send('saved');
     
@@ -27,7 +28,7 @@ const createReqtestFunction = (type:string, accountId: string, extractor: Functi
             if(transaction){
                 createTransaction(accountId, transaction, db).then((entry) => {
                     console.log('Entry', entry);
-                    collectionRef.doc(snapshot.id).set({
+                    collectionRef.doc(refId).set({
                         text: request.body.toString(),
                         type,
                         entry,
