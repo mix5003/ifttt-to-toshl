@@ -78,7 +78,9 @@ export const createTransaction = async function(account: string, transaction: Tr
         resolveWithFullResponse: true,
     });
 
-    if(response.statusCode > 400){
+    console.log(response.statusCode);
+
+    if(response.statusCode != 201){
         throw new Error(response.statusCode + " : "+response.body);
     }
 
