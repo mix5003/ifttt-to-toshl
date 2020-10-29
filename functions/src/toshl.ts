@@ -43,7 +43,10 @@ export const createTransaction = async function(account: string, transaction: Tr
             .map(t => t.id);
     }
 
+    console.log('START GET Categories');
     const categories = await db.collection('categories').get();
+    console.log('END GET Categories');
+
     const categoryId = categories.docs
         .find(c => c.data().name === transaction.category && c.data().type === transaction.type.toLowerCase())
         .id;

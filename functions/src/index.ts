@@ -34,6 +34,9 @@ const createReqtestFunction = (type:string, accountId: string, extractor: Functi
                         entry,
                     }).then(updated => {
                         console.log('COMPLETED');
+                    }).catch(err => {
+                        console.log("Not Completed");
+                        console.error(err);
                     });
                 });
             }
