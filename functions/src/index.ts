@@ -26,19 +26,23 @@ const createReqtestFunction = (type:string, accountId: string, extractor: Functi
             const transaction = extractor(request.body.toString());
             console.log('Transaction', transaction);
             if(transaction){
-                createTransaction(accountId, transaction, db).then((entry) => {
-                    console.log('Entry', entry);
-                    collectionRef.doc(refId).set({
-                        text: request.body.toString(),
-                        type,
-                        entry,
-                    }).then(updated => {
-                        console.log('COMPLETED');
-                    }).catch(err => {
-                        console.log("Not Completed");
-                        console.error(err);
+                try{
+                    createTransaction(accountId, transaction, db).then((entry) => {
+                        console.log('Entry', entry);
+                        collectionRef.doc(refId).set({
+                            text: request.body.toString(),
+                            type,
+                            entry,
+                        }).then(updated => {
+                            console.log('COMPLETED');
+                        }).catch(err => {
+                            console.log("Not Completed");
+                            console.error(err);
+                        });
                     });
-                });
+                }catch(e){
+                    console.error(e);
+                }
             }
         });
     });
