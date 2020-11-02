@@ -14,19 +14,18 @@ db.settings({timestampsInSnapshots: true});
 const collectionRef = db.collection('raws');
 
 const createReqtestFunction = (type:string, accountId: string, extractor: Function) => {
-    return  functions.https.onRequest((request, response) => {
+    return  functions.https.onRequest(async (request, response) => {
         const refId = (new Date).toISOString();
-        collectionRef.doc(refId).set({
+        return await collectionRef.doc(refId).set({
             text: request.body.toString(),
             type,
         }).then(_ => {
             console.log(typeof request.body.toString(), request.body.toString())
-            response.send('saved');
-    
+            
             const transaction = extractor(request.body.toString());
             console.log('Transaction', transaction);
             if(transaction){
-                return createTransaction(accountId, transaction, db)
+                createTransaction(accountId, transaction, db)
                     .then((entry) => {
                         console.log('Entry', entry);
                         collectionRef.doc(refId).set({
@@ -35,15 +34,20 @@ const createReqtestFunction = (type:string, accountId: string, extractor: Functi
                             entry,
                         }).then(updated => {
                             console.log('COMPLETED');
+                            response.send('saved');
                         }).catch(err => {
                             console.log("Not Completed");
                             console.error(err);
+                            response.send('toshl success, error at firebase ');
                         });
                     })
-                    .catch(err => console.error(err));
+                    .catch(err => {
+                        console.error(err);
+                        response.send('error at toshl');
+                    });
+            }else{
+                response.send('no response');
             }
-
-            return null;
         });
     });
 };
