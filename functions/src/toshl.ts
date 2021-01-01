@@ -53,12 +53,16 @@ export const createTransaction = async function(account: string, transaction: Tr
 
     const currency = transaction.currency || 'THB';
 
+    const currentDate = (new Date((+new Date) + (7 * 3600 * 1000)));
+    const fullMonth = currentDate.getMonth() + 1 < 10 ? `0${currentDate.getMonth() + 1}` : `${currentDate.getMonth() + 1}`;
+    const fullDate = currentDate.getDate() + 1 < 10 ? `0${currentDate.getDate()}` : `${currentDate.getDate()}`;
+
     const entry = {
         amount: transaction.amount,
         currency: {
             code: currency
         },
-        date: (new Date).toISOString().substring(0, 10),
+        date: `${currentDate.getFullYear()}-${fullMonth}-${fullDate}`,
         desc: transaction.detail,
         account: account,
         category: categoryId,
