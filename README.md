@@ -12,7 +12,10 @@ This project is for extract transaction from push notification message and SMS f
 ```
 firebase functions:config:set accounts.kplus=TOSHL_KPLUS_ACCOUNT_ID
 firebase functions:config:set accounts.truemoney=TOSHL_TRUEMONEY_ACCOUNT_ID
-firebase functions:config:set accounts.citibank=TOSHL_CITIBANK_ACCOUNT_ID
+firebase functions:config:set accounts.citibanks.0.digit=last4digit1 // firebase functions:config:set accounts.citibanks.0.digit=1234
+firebase functions:config:set accounts.citibanks.0.account=TOSHL_CITIBANK_ACCOUNT_ID_1
+firebase functions:config:set accounts.citibanks.1.digit=last4digit2
+firebase functions:config:set accounts.citibanks.1.account=TOSHL_CITIBANK_ACCOUNT_ID_2
 firebase functions:config:set accounts.mymo=TOSHL_MYMO_ACCOUNT_ID
 firebase functions:config:set accounts.ktc=TOSHL_KTC_ACCOUNT_ID
 firebase functions:config:set toshl.token="YOUR_TOSHL_TOKEN"

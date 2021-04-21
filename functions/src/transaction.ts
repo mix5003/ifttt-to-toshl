@@ -1,7 +1,8 @@
 export default interface Transaction {
+    accountId: string;
     amount: number;
     category: string;
-    type: 'INCOME'|'EXPENSE';
+    type: 'INCOME' | 'EXPENSE';
 
     currency?: string;
 

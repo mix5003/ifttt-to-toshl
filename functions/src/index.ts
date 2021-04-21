@@ -1,11 +1,12 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import { createTransaction, refreshCacheData } from './toshl';
-import citiExtractor from './extractor/citi.extractor';
-import kPlusExtractor from './extractor/k-plus.extractor';
-import trueMoneyExtractor from './extractor/true-money.extractor';
-import myMoLottoExtractor from './extractor/mymo-lotto.extractor';
-import ktcExtractor from './extractor/ktc.extractor';
+import {createTransaction, refreshCacheData} from './toshl';
+import {TransactionExtractor} from './extractor/extractor';
+import {KPlusExtractor} from './extractor/k-plus.extractor';
+import {TrueMoneyExtractor} from './extractor/true-money.extractor';
+import {MyMoExtractor} from './extractor/mymo-lotto.extractor';
+import {KTCExtractor} from './extractor/ktc.extractor';
+import {CitiExtractor} from "./extractor/citi.extractor";
 
 admin.initializeApp();
 
@@ -13,19 +14,19 @@ const db = admin.firestore();
 db.settings({timestampsInSnapshots: true});
 const collectionRef = db.collection('raws');
 
-const createReqtestFunction = (type:string, accountId: string, extractor: Function) => {
-    return  functions.https.onRequest(async (request, response) => {
+const createRequestFunction = (type: string, extractor: TransactionExtractor) => {
+    return functions.https.onRequest(async (request, response) => {
         const refId = (new Date).toISOString();
         return await collectionRef.doc(refId).set({
             text: request.body.toString(),
             type,
         }).then(_ => {
             console.log(typeof request.body.toString(), request.body.toString())
-            
-            const transaction = extractor(request.body.toString());
+
+            const transaction = extractor.extract(request.body.toString());
             console.log('Transaction', transaction);
             if(transaction){
-                createTransaction(accountId, transaction, db)
+                createTransaction(transaction.accountId, transaction, db)
                     .then((entry) => {
                         console.log('Entry', entry);
                         collectionRef.doc(refId).set({
@@ -59,14 +60,14 @@ export const refreshCache = functions.https.onRequest((request, response) => {
 });
 
 const accountConfigs = functions.config().accounts || {};
-const citibankFn = createReqtestFunction('Citibank', accountConfigs.citibank, citiExtractor);
-const kplusFn = createReqtestFunction('K Plus', accountConfigs.kplus, kPlusExtractor);
-const trueMoneyFn = createReqtestFunction('TrueMoney', accountConfigs.truemoney, trueMoneyExtractor);
-const myMoLottoFn = createReqtestFunction('MyMo', accountConfigs.mymo, myMoLottoExtractor);
-const ktcFn = createReqtestFunction('KTC', accountConfigs.ktc, ktcExtractor);
+const citibankFn = createRequestFunction('Citibank', new CitiExtractor(accountConfigs.citibanks));
+const kplusFn = createRequestFunction('K Plus', new KPlusExtractor(accountConfigs.kplus));
+const trueMoneyFn = createRequestFunction('TrueMoney', new TrueMoneyExtractor(accountConfigs.truemoney));
+const myMoLottoFn = createRequestFunction('MyMo', new MyMoExtractor(accountConfigs.mymo));
+const ktcFn = createRequestFunction('KTC', new KTCExtractor(accountConfigs.ktc));
 
 export const api = functions.https.onRequest((request, response) => {
-    switch(request.path){
+    switch (request.path) {
         case '/citibank':
             return citibankFn(request, response);
         case '/kplus':
