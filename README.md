@@ -14,7 +14,10 @@ firebase functions:config:set accounts.kplus.0.digit=bank // bank is unused. i u
 firebase functions:config:set accounts.kplus.0.account=TOSHL_KPLUS_ACCOUNT_ID // for now 0 mean bank account, otherwise mean credit card
 firebase functions:config:set accounts.kplus.1.digit=last4digit1
 firebase functions:config:set accounts.kplus.1.account=TOSHL_K_CREDIT_CARD_ACCOUNT_ID_1
-firebase functions:config:set accounts.truemoney=TOSHL_TRUEMONEY_ACCOUNT_ID
+firebase functions:config:set accounts.truemoney.0.digit=wallet
+firebase functions:config:set accounts.truemoney.0.account=TOSHL_TRUEMONEY_ACCOUNT_ID
+firebase functions:config:set accounts.truemoney.1.account=last4digit1
+firebase functions:config:set accounts.truemoney.1.account=TOSHL_TRUEMONEY_CARD_ACCOUNT_ID_1
 firebase functions:config:set accounts.citibanks.0.digit=last4digit1 // firebase functions:config:set accounts.citibanks.0.digit=1234
 firebase functions:config:set accounts.citibanks.0.account=TOSHL_CITIBANK_ACCOUNT_ID_1
 firebase functions:config:set accounts.citibanks.1.digit=last4digit2

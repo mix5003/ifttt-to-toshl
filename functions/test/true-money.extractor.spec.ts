@@ -5,7 +5,7 @@ import {TrueMoneyExtractor} from '../src/extractor/true-money.extractor';
 // import 'mocha';
 
 describe('True Money Extractor', () => {
-  const extractor = new TrueMoneyExtractor("1234");
+  const extractor = new TrueMoneyExtractor([{digit: "wallet", account: "1234"}, {digit: "2737", account: "4321"}]);
 
   it('should return correct value from expense transaction', () => {
     const result = extractor.extract('ชำระเงิน 49.00บ. ให้ ปปป คงเหลือ 573.00บ. (50000000000000)');
@@ -22,6 +22,16 @@ describe('True Money Extractor', () => {
     expect(result).to.contain({
       accountId: "1234",
       amount: -49,
+      type: 'EXPENSE',
+      category: 'Food'
+    });
+  });
+
+  it('should return correct value from 7-eleven transaction via credit card', () => {
+    const result = extractor.extract('คุณได้ชำระเงิน 398.00 บ. ให้ 7-ELEVEN ด้วยบัตรเครดิต / เดบิต **** **** **** 2737');
+    expect(result).to.contain({
+      accountId: "4321",
+      amount: -398,
       type: 'EXPENSE',
       category: 'Food'
     });
