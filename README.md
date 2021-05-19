@@ -10,7 +10,10 @@ This project is for extract transaction from push notification message and SMS f
 2. Config firebase project id in `.firebaserc` (copy config from `.firebaserc.example`)
 3. First deploy your firebase function. (You need to fill your credit card info to allow your function interact with networks)
 ```
-firebase functions:config:set accounts.kplus=TOSHL_KPLUS_ACCOUNT_ID
+firebase functions:config:set accounts.kplus.0.digit=bank // bank is unused. i use index base for default.
+firebase functions:config:set accounts.kplus.0.account=TOSHL_KPLUS_ACCOUNT_ID // for now 0 mean bank account, otherwise mean credit card
+firebase functions:config:set accounts.kplus.1.digit=last4digit1
+firebase functions:config:set accounts.kplus.1.account=TOSHL_K_CREDIT_CARD_ACCOUNT_ID_1
 firebase functions:config:set accounts.truemoney=TOSHL_TRUEMONEY_ACCOUNT_ID
 firebase functions:config:set accounts.citibanks.0.digit=last4digit1 // firebase functions:config:set accounts.citibanks.0.digit=1234
 firebase functions:config:set accounts.citibanks.0.account=TOSHL_CITIBANK_ACCOUNT_ID_1
