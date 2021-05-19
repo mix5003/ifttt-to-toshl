@@ -1,7 +1,10 @@
 import Transaction from "../transaction";
-import {BaseExtractor} from "./extractor";
+import {TransactionExtractor} from "./extractor";
 
-export class MyMoExtractor extends BaseExtractor {
+export class MyMoExtractor implements TransactionExtractor {
+    constructor(protected accountId: string) {
+    }
+
     extract(text: string): Transaction | null {
         if (text.includes('คุณถูกรางวัลสลากเป็นจำนวนเงิน')) {
             const result = text.match('คุณถูกรางวัลสลากเป็นจำนวนเงิน\\s*([-.,0-9]+)\\s*บาท');
