@@ -23,8 +23,6 @@ firebase functions:config:set accounts.citibanks.0.account=TOSHL_CITIBANK_ACCOUN
 firebase functions:config:set accounts.citibanks.1.digit=last4digit2
 firebase functions:config:set accounts.citibanks.1.account=TOSHL_CITIBANK_ACCOUNT_ID_2
 firebase functions:config:set accounts.mymo=TOSHL_MYMO_ACCOUNT_ID
-firebase functions:config:set accounts.ktc=TOSHL_KTC_ACCOUNT_ID
-
 firebase functions:config:set accounts.ktc.0.digit=last4digit1
 firebase functions:config:set accounts.ktc.0.account=TOSHL_KTC_ACCOUNT_ID_1
 firebase functions:config:set accounts.ktc.1.digit=last4digit2
