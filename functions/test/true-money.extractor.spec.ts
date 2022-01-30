@@ -37,6 +37,16 @@ describe('True Money Extractor', () => {
     });
   });
 
+  it('should return correct value from 7-eleven transaction via credit card EN', () => {
+    const result = extractor.extract('TrueMoney Wallet You have paid 281.00 THB. to 7-ELEVEN. with credit / debit card 4386 79** **** 2737');
+    expect(result).to.contain({
+      accountId: "4321",
+      amount: -281,
+      type: 'EXPENSE',
+      category: 'Food'
+    });
+  });
+
   it('should return correct value from income transaction', () => {
     const result = extractor.extract('You have added 1,000 Baht with TrueMoney Cash Card and service fee was charged for 140 Baht. You balance is 860 Baht (transaction 50000000000000)');
     expect(result).to.contain({

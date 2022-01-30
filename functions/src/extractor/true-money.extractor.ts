@@ -7,7 +7,7 @@ export class TrueMoneyExtractor implements TransactionExtractor {
 
     getAccountId(text: string): string {
         const card = this.cardMap.find(v => text.indexOf(v.digit) !== -1);
-        if (card && text.includes('บัตร')) {
+        if (card && (text.includes('บัตร') || text.includes('credit'))) {
             return card.account;
         }
         return this.cardMap[0].account;
@@ -16,6 +16,20 @@ export class TrueMoneyExtractor implements TransactionExtractor {
     extract(text: string): Transaction | null {
         if (text.includes('ชำระเงิน')) {
             const result = text.match('ชำระเงิน\\s*([-.,0-9]+)\\s*บ.');
+            let category = 'Uncategorized';
+            if (text.includes('7-ELEVEN')) {
+                category = 'Food'
+            }
+            if (result) {
+                return {
+                    accountId: this.getAccountId(text),
+                    amount: -1 * +(result[1].replace(/,/g, '')),
+                    type: 'EXPENSE',
+                    category
+                }
+            }
+        } else if (text.includes('You have paid')) {
+            const result = text.match('TrueMoney Wallet You have paid\\s*([-.,0-9]+)\\s*THB');
             let category = 'Uncategorized';
             if (text.includes('7-ELEVEN')) {
                 category = 'Food'
