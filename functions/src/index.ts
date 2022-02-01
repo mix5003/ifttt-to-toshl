@@ -18,6 +18,7 @@ const createRequestFunction = (type: string, extractor: TransactionExtractor) =>
     return functions.https.onRequest(async (request, response) => {
         const refId = (new Date).toISOString();
         return await collectionRef.doc(refId).set({
+            date: refId,
             text: request.body.toString(),
             type,
         }).then(_ => {
@@ -30,6 +31,7 @@ const createRequestFunction = (type: string, extractor: TransactionExtractor) =>
                     .then((entry) => {
                         console.log('Entry', entry);
                         collectionRef.doc(refId).set({
+                            date: refId,
                             text: request.body.toString(),
                             type,
                             entry,
