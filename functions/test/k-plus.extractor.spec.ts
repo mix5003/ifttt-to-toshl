@@ -17,6 +17,16 @@ describe('K PLUS Extractor', () => {
     });
   });
 
+  it('should return correct value from transfer transaction', () => {
+    const result = extractor.extract('รายการโอน/ถอน บัญชี xxx-x-x3060-x จำนวนเงิน 300.00 บาท วันที่ 30 พ.ย. 61 10:37 น.');
+    expect(result).to.contain({
+      accountId: "1234",
+      amount: -300,
+      type: 'EXPENSE',
+      category: 'Uncategorized'
+    });
+  });
+
   it('should return correct value from income transaction', () => {
     const result = extractor.extract('รายการเงินเข้า บัญชี xxx-x-x3060-x จำนวนเงิน 300.00 บาท วันที่ 30 พ.ย. 61 10:37 น.');
     expect(result).to.contain({

@@ -17,11 +17,15 @@ export class KPlusExtractor implements TransactionExtractor {
         const accountId = this.getAccountId(text);
 
         if (text.includes('รายการโอน/ถอน')) {
-            const result = text.match('จำนวนเงิน\\s*([-.,0-9]+)\\s*บาท');
+            const result = text.match('จำนวนเงิน\\s*-*([-.,0-9]+)\\s*บาท');
             if (result) {
+                let value = +(result[1].replace(/,/g, ''));
+                if(value > 0){
+                    value = -value;
+                }
                 return {
                     accountId: accountId,
-                    amount: +(result[1].replace(/,/g, '')),
+                    amount: value,
                     type: 'EXPENSE',
                     category: 'Uncategorized'
                 }
