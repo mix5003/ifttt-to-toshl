@@ -28,4 +28,43 @@ describe('KTC Extractor', () => {
       category: 'Uncategorized'
     });
   });
+
+  it('should return correct value from MRT transaction via credit card', () => {
+    const result = extractor.extract('รายการใช้จ่าย บัตร KTC X-6099 ยอด 82.00 THB @MRT-BEM                  Bangkok      TH');
+    expect(result).to.contain({
+      accountId: "4321",
+      amount: -82,
+      type: 'EXPENSE',
+      currency: 'THB',
+      category: 'Travel',
+    });
+    expect(result.tags).to.have.lengthOf(1);
+    expect(result.tags[0]).to.eq('MRT');
+  });
+
+  it('should return correct value from BTS transaction via credit card', () => {
+    const result = extractor.extract('รายการใช้จ่าย กําลังดําเนินการรายการผ่านบัตร KTC X-6099 ยอด 48.00 THB @LINEPAY*BTS01            281786908    TH');
+    expect(result).to.contain({
+      accountId: "4321",
+      amount: -48,
+      type: 'EXPENSE',
+      currency: 'THB',
+      category: 'Travel',
+    });
+    expect(result.tags).to.have.lengthOf(1);
+    expect(result.tags[0]).to.eq('BTS');
+  });
+
+  it('should return correct value from Bus transaction via credit card', () => {
+    const result = extractor.extract('รายการใช้จ่าย บัตร KTC X-6099 ยอด 13.00 THB @BMTA ZONE 6 GROUP 1      NAKHON PATHOMTH');
+    expect(result).to.contain({
+      accountId: "4321",
+      amount: -13,
+      type: 'EXPENSE',
+      currency: 'THB',
+      category: 'Travel',
+    });
+    expect(result.tags).to.have.lengthOf(1);
+    expect(result.tags[0]).to.eq('Bus');
+  });
 });

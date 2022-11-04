@@ -23,6 +23,35 @@ export class KTCExtractor implements TransactionExtractor {
         if (text.includes('ยอด')) {
             const result = text.match('ยอด\\s*([-.,0-9]+)\\s*([A-Z]+)');
             if (result) {
+                if (text.includes('@LINEPAY*BTS01')) {
+                    return {
+                        accountId: accountId,
+                        amount: -1 * +(result[1].replace(/,/g, '')),
+                        type: 'EXPENSE',
+                        currency: result[2],
+                        category: 'Travel',
+                        tags: ['BTS'],
+                    }
+                }else if(text.includes('MRT')){
+                    return {
+                        accountId: accountId,
+                        amount: -1 * +(result[1].replace(/,/g, '')),
+                        type: 'EXPENSE',
+                        currency: result[2],
+                        category: 'Travel',
+                        tags: ['MRT'],
+                    }
+                }else if(text.includes('@BMTA') || text.includes('@T.MANIT TRANSPORTATION') || text.includes('@CHAREONBUS')){
+                    return {
+                        accountId: accountId,
+                        amount: -1 * +(result[1].replace(/,/g, '')),
+                        type: 'EXPENSE',
+                        currency: result[2],
+                        category: 'Travel',
+                        tags: ['Bus'],
+                    }
+                }
+
                 return {
                     accountId: accountId,
                     amount: -1 * +(result[1].replace(/,/g, '')),
