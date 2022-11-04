@@ -17,7 +17,7 @@ export class TrueMoneyExtractor implements TransactionExtractor {
         if (text.includes('ชำระเงิน')) {
             const result = text.match('ชำระเงิน\\s*([-.,0-9]+)\\s*บ.');
             let category = 'Uncategorized';
-            if (text.includes('7-ELEVEN')) {
+            if (text.includes('7-ELEVEN') || text.includes('True Vending Machine')) {
                 category = 'Food'
             }
             if (result) {
@@ -31,7 +31,7 @@ export class TrueMoneyExtractor implements TransactionExtractor {
         } else if (text.includes('You have paid')) {
             const result = text.match('TrueMoney Wallet You have paid\\s*([-.,0-9]+)\\s*THB');
             let category = 'Uncategorized';
-            if (text.includes('7-ELEVEN')) {
+            if (text.includes('7-ELEVEN') || text.includes('True Vending Machine')) {
                 category = 'Food'
             }
             if (result) {
