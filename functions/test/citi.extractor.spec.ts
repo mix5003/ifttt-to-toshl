@@ -25,6 +25,8 @@ describe('Citi Extractor', () => {
       type: 'EXPENSE',
       category: 'Travel'
     });
+    expect(result.tags).to.have.lengthOf(1);
+    expect(result.tags[0]).to.eq('Taxi');
   });
 
   it('should return correct value from online expense transaction', () => {
