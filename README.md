@@ -27,6 +27,8 @@ firebase functions:config:set accounts.ktc.0.digit=last4digit1
 firebase functions:config:set accounts.ktc.0.account=TOSHL_KTC_ACCOUNT_ID_1
 firebase functions:config:set accounts.ktc.1.digit=last4digit2
 firebase functions:config:set accounts.ktc.1.account=TOSHL_KTC_ACCOUNT_ID_2
+firebase functions:config:set accounts.ttb.0.digit=last4digit1
+firebase functions:config:set accounts.ttb.0.account=TOSHL_TTB_ACCOUNT_ID_1
 
 firebase functions:config:set toshl.token="YOUR_TOSHL_TOKEN"
 npm run deploy
