@@ -7,6 +7,7 @@ import {TrueMoneyExtractor} from './extractor/true-money.extractor';
 import {MyMoExtractor} from './extractor/mymo-lotto.extractor';
 import {KTCExtractor} from './extractor/ktc.extractor';
 import {CitiExtractor} from "./extractor/citi.extractor";
+import {TTBExtractor} from "./extractor/ttb.extractor";
 
 admin.initializeApp();
 
@@ -67,6 +68,7 @@ const kplusFn = createRequestFunction('K Plus', new KPlusExtractor(accountConfig
 const trueMoneyFn = createRequestFunction('TrueMoney', new TrueMoneyExtractor(accountConfigs.truemoney));
 const myMoLottoFn = createRequestFunction('MyMo', new MyMoExtractor(accountConfigs.mymo));
 const ktcFn = createRequestFunction('KTC', new KTCExtractor(accountConfigs.ktc));
+const ttbFn = createRequestFunction('TTB', new TTBExtractor(accountConfigs.ttb));
 
 export const api = functions.https.onRequest((request, response) => {
     switch (request.path) {
@@ -80,6 +82,8 @@ export const api = functions.https.onRequest((request, response) => {
             return myMoLottoFn(request, response);
         case '/ktc':
             return ktcFn(request, response);
+        case '/ttb':
+            return ttbFn(request, response);
         default: break;
     }
     response.send(JSON.stringify({
