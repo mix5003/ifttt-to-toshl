@@ -5,7 +5,7 @@ import {TTBExtractor} from '../src/extractor/ttb.extractor';
 // import 'mocha';
 
 describe('TTB Extractor', () => {
-  let extractor = new TTBExtractor([{digit: "2737", account: "1234"}])
+  let extractor = new TTBExtractor([{digit: "2737", account: "1234"}, {digit: "5678", account: "4321"}])
 
   it('should return correct value from expense transaction', () => {
     const result = extractor.extract('ท่านใช้จ่าย 70 THB ที่ PAYPAL HK ผ่านบัตรเครดิต ทีทีบี หมายเลข xx2737 (11/11/2022@23:46) หากมีข้อสงสัย โทร 1428');
@@ -28,4 +28,16 @@ describe('TTB Extractor', () => {
       category: 'Uncategorized'
     });
   });
+
+  it('should return correct value from cashback transaction', () => {
+    const result = extractor.extract('มีเงิน เงินคืนบัตร โซ สมาร์ท จำนวน 195.71 บ.เข้าบ/ช XX5678. 23/12/22@20:08');
+    expect(result).to.contain({
+      accountId: "4321",
+      amount: 195.71,
+      type: 'INCOME',
+      currency: 'THB',
+      category: 'CashBack'
+    });
+  });
+  
 });

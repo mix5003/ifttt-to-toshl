@@ -33,6 +33,21 @@ export class TTBExtractor implements TransactionExtractor {
                 }
             }
         }
+        if (text.includes('เงินคืนบัตร')) {
+            const result = text.match('จำนวน\\s*([-.,0-9]+)\\s*บ.');
+            let category = 'CashBack';
+            let tags = null;
+            if (result) {
+                return {
+                    accountId: accountId,
+                    amount: +(result[1].replace(/,/g, '')),
+                    type: 'INCOME',
+                    currency: 'THB',
+                    category,
+                    tags
+                }
+            }
+        }
         return null;
     }
 }
