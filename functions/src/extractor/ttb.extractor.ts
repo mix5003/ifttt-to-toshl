@@ -22,7 +22,10 @@ export class TTBExtractor implements TransactionExtractor {
             const result = text.match('ท่านใช้จ่าย\\s*([-.,0-9]+)\\s*([A-Z]+)\\s*ที่');
             let category = 'Uncategorized';
             let tags = null;
-            if (text.includes('TMN 7-11') || text.includes('TMN FAST FOOD')) {
+            if(text.includes('TMN 7-11')){
+                return null;
+            }
+            if (text.includes('TMN FAST FOOD')) {
                 category = 'Food'
             }
             if (result) {
