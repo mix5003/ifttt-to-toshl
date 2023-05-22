@@ -55,6 +55,19 @@ describe('KTC Extractor', () => {
     expect(result.tags[0]).to.eq('BTS');
   });
 
+  it('should return correct value from BTS-2 transaction via credit card', () => {
+    const result = extractor.extract('รายการใช้จ่าย บัตร KTC X-6099 ยอด 50.00 THB @LINEPAY*BTSFARE          281786908    TH');
+    expect(result).to.contain({
+      accountId: "4321",
+      amount: -50,
+      type: 'EXPENSE',
+      currency: 'THB',
+      category: 'Travel',
+    });
+    expect(result.tags).to.have.lengthOf(1);
+    expect(result.tags[0]).to.eq('BTS');
+  });
+
   it('should return correct value from Bus transaction via credit card', () => {
     const result = extractor.extract('รายการใช้จ่าย บัตร KTC X-6099 ยอด 13.00 THB @BMTA ZONE 6 GROUP 1      NAKHON PATHOMTH');
     expect(result).to.contain({

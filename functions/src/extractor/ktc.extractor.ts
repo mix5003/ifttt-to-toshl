@@ -23,7 +23,7 @@ export class KTCExtractor implements TransactionExtractor {
         if (text.includes('ยอด')) {
             const result = text.match('ยอด\\s*([-.,0-9]+)\\s*([A-Z]+)');
             if (result) {
-                if (text.includes('@LINEPAY*BTS01')) {
+                if (text.includes('@LINEPAY*BTS')) {
                     return {
                         accountId: accountId,
                         amount: -1 * +(result[1].replace(/,/g, '')),
