@@ -21,7 +21,7 @@ const TTL_CREATED_ENTRY = 3 * 365 * 24 * 60 * 60 * 1000; // 3 Year
 const createRequestFunction = (type: string, extractor: TransactionExtractor) => {
     return functions.https.onRequest(async (request, response) => {
         const refId = (new Date).toISOString();
-        const expireAt = (new Date((new Date).getTime() + TTL_NORMAL)).toISOString();
+        const expireAt = (new Date((new Date).getTime() + TTL_NORMAL));
 
         return await collectionRef.doc(refId).set({
             date: refId,
@@ -36,7 +36,7 @@ const createRequestFunction = (type: string, extractor: TransactionExtractor) =>
             if(transaction){
                 createTransaction(transaction.accountId, transaction, db)
                     .then((entry) => {
-                        const expireAt = (new Date((new Date).getTime() + TTL_CREATED_ENTRY)).toISOString();
+                        const expireAt = (new Date((new Date).getTime() + TTL_CREATED_ENTRY));
 
                         console.log('Entry', entry);
                         collectionRef.doc(refId).set({
