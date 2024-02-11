@@ -8,6 +8,7 @@ import {MyMoExtractor} from './extractor/mymo-lotto.extractor';
 import {KTCExtractor} from './extractor/ktc.extractor';
 import {CitiExtractor} from "./extractor/citi.extractor";
 import {TTBExtractor} from "./extractor/ttb.extractor";
+import {MakeByKPlusExtractor} from './extractor/make-by-kplus.extractor';
 
 admin.initializeApp();
 
@@ -78,6 +79,7 @@ const trueMoneyFn = createRequestFunction('TrueMoney', new TrueMoneyExtractor(ac
 const myMoLottoFn = createRequestFunction('MyMo', new MyMoExtractor(accountConfigs.mymo));
 const ktcFn = createRequestFunction('KTC', new KTCExtractor(accountConfigs.ktc));
 const ttbFn = createRequestFunction('TTB', new TTBExtractor(accountConfigs.ttb));
+const makeFn = createRequestFunction('MAKE By KPlus', new MakeByKPlusExtractor(accountConfigs.make_by_kplus));
 
 export const api = functions.https.onRequest((request, response) => {
     switch (request.path) {
@@ -85,6 +87,8 @@ export const api = functions.https.onRequest((request, response) => {
             return citibankFn(request, response);
         case '/kplus':
             return kplusFn(request, response);
+        case '/make-by-kplus':
+            return makeFn(request, response);
         case '/trueMoney':
             return trueMoneyFn(request, response);
         case '/mymo-lotto':
