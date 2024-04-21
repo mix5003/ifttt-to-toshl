@@ -8,6 +8,7 @@ import {MyMoExtractor} from './extractor/mymo-lotto.extractor';
 import {KTCExtractor} from './extractor/ktc.extractor';
 import {CitiExtractor} from "./extractor/citi.extractor";
 import {TTBExtractor} from "./extractor/ttb.extractor";
+import {UOBExtractor} from "./extractor/uob.extractor";
 import {MakeByKPlusExtractor} from './extractor/make-by-kplus.extractor';
 
 admin.initializeApp();
@@ -80,6 +81,7 @@ const myMoLottoFn = createRequestFunction('MyMo', new MyMoExtractor(accountConfi
 const ktcFn = createRequestFunction('KTC', new KTCExtractor(accountConfigs.ktc));
 const ttbFn = createRequestFunction('TTB', new TTBExtractor(accountConfigs.ttb));
 const makeFn = createRequestFunction('MAKE By KPlus', new MakeByKPlusExtractor(accountConfigs.make_by_kplus));
+const uobFn = createRequestFunction('UOB', new UOBExtractor(accountConfigs.uob));
 
 export const api = functions.https.onRequest((request, response) => {
     switch (request.path) {
@@ -97,6 +99,8 @@ export const api = functions.https.onRequest((request, response) => {
             return ktcFn(request, response);
         case '/ttb':
             return ttbFn(request, response);
+        case '/uob':
+            return uobFn(request, response);
         default: break;
     }
     response.send(JSON.stringify({
