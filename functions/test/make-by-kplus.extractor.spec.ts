@@ -21,7 +21,7 @@ describe('Make By K PLUS Extractor', () => {
     const result = extractor.extract('💰 คุณได้รับเงิน ฿20.00 จาก นาย ... ด้วย ธนาคารกสิกรไทย');
     expect(result).to.contain({
       accountId: "1234",
-      amount: 300,
+      amount: 20,
       type: 'INCOME',
       category: 'Uncategorized'
     });
