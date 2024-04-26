@@ -19,16 +19,30 @@ export class UOBExtractor implements TransactionExtractor {
             return null;
         }
         if (text.includes('UOB')) {
-            const result = text.match(/UOB\s+:\s+ขอบคุณ\s+ท่านใช้บัตร(?:เสริม)*\s+X-[0-9]{4}\s+=\s+([-.,0-9]+)\s+([A-Z]+)/);
-            if (result) {
-                return {
-                    accountId: accountId,
-                    amount: -1 * +(result[1].replace(/,/g, '')),
-                    type: 'EXPENSE',
-                    currency: result[2],
-                    category: 'Uncategorized',
+            if(text.includes('ท่านมียอดใช้จ่ายผ่านบัตรยูโอบี')){
+                const result = text.match(/บัตรยูโอบี\s+X-[0-9]{4}\s+จำนวน\s+([-.,0-9]+)\s+([A-Z]+)\s+ติดต่อ/);
+                if (result) {
+                    return {
+                        accountId: accountId,
+                        amount: -1 * +(result[1].replace(/,/g, '')),
+                        type: 'EXPENSE',
+                        currency: result[2],
+                        category: 'Uncategorized',
+                    }
+                }
+            }else if(text.includes('ท่านใช้บัตร')){
+                const result = text.match(/UOB\s+:\s+ขอบคุณ\s+ท่านใช้บัตร(?:เสริม)*\s+X-[0-9]{4}\s+=\s+([-.,0-9]+)\s+([A-Z]+)/);
+                if (result) {
+                    return {
+                        accountId: accountId,
+                        amount: -1 * +(result[1].replace(/,/g, '')),
+                        type: 'EXPENSE',
+                        currency: result[2],
+                        category: 'Uncategorized',
+                    }
                 }
             }
+  
         }
         return null;
     }
