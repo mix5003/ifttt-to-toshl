@@ -40,6 +40,17 @@ describe('UOB Extractor', () => {
     });
   });
 
+  it('should return correct value from expense other currency transaction 2', () => {
+    const result = extractor.extract('มีการใช้บัตรยูโอบี X-2737 ที่ Patreon* Membership USD 8.54 หากไม่ได้ทำรายการติดต่อ 02-285-1573 - UOBT');
+    expect(result).to.contain({
+      accountId: "1234",
+      amount: -8.54,
+      type: 'EXPENSE',
+      currency: 'USD',
+      category: 'Uncategorized'
+    });
+  });
+
   it('should return null when can not match transaction', () => {
     const result = extractor.extract('สมัครบัตรเดบิตเรียบร้อยแล้ว');
     expect(result).to.null;

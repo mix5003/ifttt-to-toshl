@@ -41,6 +41,17 @@ export class UOBExtractor implements TransactionExtractor {
                         category: 'Uncategorized',
                     }
                 }
+            }else if(text.includes('มีการใช้บัตรยูโอบี')){
+                const result = text.match(/มีการใช้บัตรยูโอบี\s+X-[0-9]{4}\s+ที่\s+.*\s+([A-Z]+)\s+([-.,0-9]+)\s+หากไม่ได้ทำรายการติดต่อ/);
+                if (result) {
+                    return {
+                        accountId: accountId,
+                        amount: -1 * +(result[2].replace(/,/g, '')),
+                        type: 'EXPENSE',
+                        currency: result[1],
+                        category: 'Uncategorized',
+                    }
+                }
             }
   
         }
