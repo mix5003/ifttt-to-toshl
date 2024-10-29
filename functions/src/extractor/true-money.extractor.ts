@@ -15,12 +15,20 @@ export class TrueMoneyExtractor implements TransactionExtractor {
 
     extract(text: string): Transaction | null {
         if (text.includes('ชำระเงิน')) {
-            const result = text.match('ชำระเงิน\\s*([-.,0-9]+)\\s*บ.');
             let category = 'Uncategorized';
-            if (text.includes('7-ELEVEN') || text.includes('True Vending Machine')) {
+            const textLower = text.toLowerCase();
+            if (textLower.includes('7-eleven') || textLower.includes('true vending machine')) {
                 category = 'Food'
             }
-            if (result) {
+            let result
+            if (result = text.match('ชำระเงิน\\s*([-.,0-9]+)\\s*บ.')) {
+                return {
+                    accountId: this.getAccountId(text),
+                    amount: -1 * +(result[1].replace(/,/g, '')),
+                    type: 'EXPENSE',
+                    category
+                }
+            }else if(result = text.match('ชำระเงิน\\s*฿\\s*([-.,0-9]+)\\s*')){
                 return {
                     accountId: this.getAccountId(text),
                     amount: -1 * +(result[1].replace(/,/g, '')),

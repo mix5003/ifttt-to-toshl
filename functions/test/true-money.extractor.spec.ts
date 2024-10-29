@@ -37,6 +37,16 @@ describe('True Money Extractor', () => {
     });
   });
 
+  it('should return correct value from 7-eleven transaction via credit card 2', () => {
+    const result = extractor.extract('TrueMoney Wallet คุณได้ชำระเงิน ฿ 22.00  ให้ 7-Eleven ด้วยบัตรเครดิต / เดบิต 1234 56** **** 2737');
+    expect(result).to.contain({
+      accountId: "4321",
+      amount: -22,
+      type: 'EXPENSE',
+      category: 'Food'
+    });
+  });
+
   it('should return correct value from True Vending Machine transaction via credit card', () => {
     const result = extractor.extract('TrueMoney Wallet คุณได้ชำระเงิน 16.00 บ. ให้ร้าน True Vending Machine');
     expect(result).to.contain({
