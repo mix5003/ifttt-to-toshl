@@ -36,6 +36,21 @@ export class TrueMoneyExtractor implements TransactionExtractor {
                     category
                 }
             }
+        } else if (text.includes('จ่ายเงินสำเร็จ')) {
+            let category = 'Uncategorized';
+            const textLower = text.toLowerCase();
+            if (textLower.includes('7-eleven') || textLower.includes('true vending machine')) {
+                category = 'Food'
+            }
+            let result
+            if (result = text.match('จ่ายเงินสำเร็จ\\s*คุณจ่ายเงิน\\s*฿\\s*([-.,0-9]+)')) {
+                return {
+                    accountId: this.getAccountId(text),
+                    amount: -1 * +(result[1].replace(/,/g, '')),
+                    type: 'EXPENSE',
+                    category
+                }
+            }
         } else if (text.includes('You have paid')) {
             const result = text.match('TrueMoney Wallet You have paid\\s*([-.,0-9]+)\\s*THB');
             let category = 'Uncategorized';
