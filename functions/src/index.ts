@@ -6,7 +6,6 @@ import {KPlusExtractor} from './extractor/k-plus.extractor';
 import {TrueMoneyExtractor} from './extractor/true-money.extractor';
 import {MyMoExtractor} from './extractor/mymo-lotto.extractor';
 import {KTCExtractor} from './extractor/ktc.extractor';
-import {CitiExtractor} from "./extractor/citi.extractor";
 import {TTBExtractor} from "./extractor/ttb.extractor";
 import {UOBExtractor} from "./extractor/uob.extractor";
 import {MakeByKPlusExtractor} from './extractor/make-by-kplus.extractor';
@@ -74,7 +73,6 @@ export const refreshCache = functions.https.onRequest((request, response) => {
 });
 
 const accountConfigs = functions.config().accounts || {};
-const citibankFn = createRequestFunction('Citibank', new CitiExtractor(accountConfigs.citibanks));
 const kplusFn = createRequestFunction('K Plus', new KPlusExtractor(accountConfigs.kplus));
 const trueMoneyFn = createRequestFunction('TrueMoney', new TrueMoneyExtractor(accountConfigs.truemoney));
 const myMoLottoFn = createRequestFunction('MyMo', new MyMoExtractor(accountConfigs.mymo));
@@ -85,8 +83,6 @@ const uobFn = createRequestFunction('UOB', new UOBExtractor(accountConfigs.uob))
 
 export const api = functions.https.onRequest((request, response) => {
     switch (request.path) {
-        case '/citibank':
-            return citibankFn(request, response);
         case '/kplus':
             return kplusFn(request, response);
         case '/make-by-kplus':

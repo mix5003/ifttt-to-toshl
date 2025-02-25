@@ -1,7 +1,7 @@
 This project is for extract transaction from push notification message and SMS form bank.
 
 # Dependency Service
-1. [IFTTT](https://ifttt.com) for capture notification and SMS.
+1. [Tasker](https://play.google.com/store/apps/details?id=net.dinglisch.android.taskerm&hl=th) for capture notification and SMS.
 2. [Google Firebase](https://firebase.google.com/) for extract message and send to Toshl API.
 3. [Toshl](https://toshl.com/) for core track all transaction.
 
@@ -19,10 +19,6 @@ firebase functions:config:set accounts.truemoney.0.digit=wallet
 firebase functions:config:set accounts.truemoney.0.account=TOSHL_TRUEMONEY_ACCOUNT_ID
 firebase functions:config:set accounts.truemoney.1.digit=last4digit1
 firebase functions:config:set accounts.truemoney.1.account=TOSHL_TRUEMONEY_CARD_ACCOUNT_ID_1
-firebase functions:config:set accounts.citibanks.0.digit=last4digit1 // firebase functions:config:set accounts.citibanks.0.digit=1234
-firebase functions:config:set accounts.citibanks.0.account=TOSHL_CITIBANK_ACCOUNT_ID_1
-firebase functions:config:set accounts.citibanks.1.digit=last4digit2
-firebase functions:config:set accounts.citibanks.1.account=TOSHL_CITIBANK_ACCOUNT_ID_2
 firebase functions:config:set accounts.mymo=TOSHL_MYMO_ACCOUNT_ID
 firebase functions:config:set accounts.ktc.0.digit=last4digit1
 firebase functions:config:set accounts.ktc.0.account=TOSHL_KTC_ACCOUNT_ID_1
@@ -41,77 +37,4 @@ npm run deploy
 
 5. Config IFTTT Applet to capture message and send to firebase functions.
 
-# IFTTT Applet
-## TrueMoney 
-
-**This:**
-- Service: Android SMS
-- Trigger: New SMS received matches search
-- Keywords: ชำระเงิน
-
-**That**
-- Service: Webhook
-- Action: Make a web request
-- URL: Your True money firebase url
-- Method: POST
-- Content-type: text/plain
-- Body: {{Text}} - {{FromNumber}}
-
-## Citibank 
-**This:**
-- Service: Android SMS
-- Trigger: New SMS received matches search
-- Keywords: Your last 4 digits of credit card
-
-**That**
-- Service: Webhook
-- Action: Make a web request
-- URL: Your Citibank firebase url
-- Method: POST
-- Content-type: text/plain
-- Body: {{Text}} - {{FromNumber}}
-
-## KPlus
-**This:**
-- Service: Android Device
-- Trigger: Notification received from a specific app
-- App Name: K PLUS
-
-**That**
-- Service: Webhook
-- Action: Make a web request
-- URL: Your KPlus firebase url
-- Method: POST
-- Content-type: text/plain
-- Body: {{NotificationTitle}} {{NotificationMessage}}
-
-## MyMoLotto (Untested)
-**This:**
-- Service: Android Device
-- Trigger: Notification received from a specific app
-- App Name: MyMo
-
-**That**
-- Service: Webhook
-- Action: Make a web request
-- URL: Your MyMoLotto firebase url
-- Method: POST
-- Content-type: text/plain
-- Body: {{NotificationTitle}} {{NotificationMessage}}
-
-## KTC Online (Push Notification)
-If you want you can change to SMS triggers. But sometime KTC will double send SMS. I Think it KTC retry process when SMS. And I think SMS will notfication if amount more than 100 THB.
-**This:**
-- Service: Android Device
-- Trigger: Notification received from a specific app
-- App Name: KTC Mobile
-- Keyword (not necessary): Your last 4 digits of credit card
-
-**That**
-- Service: Webhook
-- Action: Make a web request
-- URL: Your KTC firebase url
-- Method: POST
-- Content-type: text/plain
-- Body: {{NotificationTitle}} {{NotificationMessage}}
-
+# Config Tasker by yourself (can't remember too. hopefully google drive backup works)
