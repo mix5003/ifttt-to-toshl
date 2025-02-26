@@ -38,17 +38,17 @@ describe('True Money Extractor', () => {
   });
 
   it('should return correct value from 7-eleven transaction via bank', () => {
-    const result1 = extractor.extract('จ่ายเงินสำเร็จ คุณจ่ายเงิน ฿ 52.00 ให้ 7-Eleven ด้วยบัญชีธนาคาร ธนาคารไทยพาณิชย์ ******1234');
+    const result1 = extractor.extract('จ่ายเงินสำเร็จ คุณจ่ายเงิน ฿ 52.00 ให้ 7-Eleven ด้วยบัญชีธนาคาร ธนาคารไทยพาณิชย์ ******2737');
     expect(result1).to.contain({
-      accountId: "1234",
+      accountId: "4321",
       amount: -52,
       type: 'EXPENSE',
       category: 'Food'
     });
 
-    const result2 = extractor.extract('จ่ายเงินสำเร็จ คุณจ่ายเงิน ฿ 52.00 ให้ 7-Eleven ด้วยบัญชีธนาคาร ธนาคารกสิกรไทย ******1234');
+    const result2 = extractor.extract('จ่ายเงินสำเร็จ คุณจ่ายเงิน ฿ 52.00 ให้ 7-Eleven ด้วยบัญชีธนาคาร ธนาคารกสิกรไทย ******2737');
     expect(result2).to.contain({
-      accountId: "1234",
+      accountId: "4321",
       amount: -52,
       type: 'EXPENSE',
       category: 'Food'

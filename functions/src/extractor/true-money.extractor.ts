@@ -7,7 +7,7 @@ export class TrueMoneyExtractor implements TransactionExtractor {
 
     getAccountId(text: string): string {
         const card = this.cardMap.find(v => text.indexOf(v.digit) !== -1);
-        if (card && (text.includes('บัตร') || text.includes('credit'))) {
+        if (card && (text.includes('บัตร') || text.includes('credit') || text.includes('ด้วยบัญชีธนาคาร'))) {
             return card.account;
         }
         return this.cardMap[0].account;
