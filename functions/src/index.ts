@@ -5,6 +5,7 @@ import {TransactionExtractor} from './extractor/extractor';
 import {KPlusExtractor} from './extractor/k-plus.extractor';
 import {TrueMoneyExtractor} from './extractor/true-money.extractor';
 import {MyMoExtractor} from './extractor/mymo-lotto.extractor';
+import {KTBExtractor} from './extractor/ktb.extractor';
 import {KTCExtractor} from './extractor/ktc.extractor';
 import {TTBExtractor} from "./extractor/ttb.extractor";
 import {UOBExtractor} from "./extractor/uob.extractor";
@@ -76,6 +77,7 @@ const accountConfigs = functions.config().accounts || {};
 const kplusFn = createRequestFunction('K Plus', new KPlusExtractor(accountConfigs.kplus));
 const trueMoneyFn = createRequestFunction('TrueMoney', new TrueMoneyExtractor(accountConfigs.truemoney));
 const myMoLottoFn = createRequestFunction('MyMo', new MyMoExtractor(accountConfigs.mymo));
+const ktbFn = createRequestFunction('KTB', new KTBExtractor(accountConfigs.ktb));
 const ktcFn = createRequestFunction('KTC', new KTCExtractor(accountConfigs.ktc));
 const ttbFn = createRequestFunction('TTB', new TTBExtractor(accountConfigs.ttb));
 const makeFn = createRequestFunction('MAKE By KPlus', new MakeByKPlusExtractor(accountConfigs.make_by_kplus));
@@ -91,6 +93,8 @@ export const api = functions.https.onRequest((request, response) => {
             return trueMoneyFn(request, response);
         case '/mymo-lotto':
             return myMoLottoFn(request, response);
+        case '/ktb':
+            return ktbFn(request, response);
         case '/ktc':
             return ktcFn(request, response);
         case '/ttb':
