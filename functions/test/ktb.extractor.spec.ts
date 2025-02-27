@@ -14,7 +14,7 @@ describe('KTB Extractor', () => {
       amount: -20,
       type: 'EXPENSE',
       currency: 'THB',
-      category: 'Uncategorized'
+      category: 'Food'
     });
   });
 
@@ -25,7 +25,7 @@ describe('KTB Extractor', () => {
       amount: -20,
       type: 'EXPENSE',
       currency: 'THB',
-      category: 'Uncategorized'
+      category: 'Food'
     });
   });
 
@@ -36,7 +36,7 @@ describe('KTB Extractor', () => {
       amount: 50,
       type: 'INCOME',
       currency: 'THB',
-      category: 'Uncategorized',
+      category: 'Food',
     });
   });
 
@@ -47,7 +47,7 @@ describe('KTB Extractor', () => {
       amount: 50,
       type: 'INCOME',
       currency: 'THB',
-      category: 'Uncategorized',
+      category: 'Food',
     });
   });
 });

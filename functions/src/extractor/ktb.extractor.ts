@@ -28,7 +28,7 @@ export class KTBExtractor implements TransactionExtractor {
                     amount: -1 * +(result[1].replace(/,/g, '')),
                     type: 'EXPENSE',
                     currency: 'THB',
-                    category: 'Uncategorized',
+                    category: 'Food',
                 }
             }
         }else if (text.includes('รับเงินสำเร็จ')) {
@@ -39,7 +39,7 @@ export class KTBExtractor implements TransactionExtractor {
                     amount: 1 * +(result[1].replace(/,/g, '')),
                     type: 'INCOME',
                     currency: 'THB',
-                    category: 'Uncategorized',
+                    category: 'Food',
                 }
             }
         }
