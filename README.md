@@ -30,6 +30,8 @@ firebase functions:config:set accounts.ttb.0.digit=last4digit1
 firebase functions:config:set accounts.ttb.0.account=TOSHL_TTB_ACCOUNT_ID_1
 firebase functions:config:set accounts.uob.0.digit=last4digit1
 firebase functions:config:set accounts.uob.0.account=TOSHL_UOB_ACCOUNT_ID_1
+firebase functions:config:set accounts.uchoose.0.digit=last4digit1
+firebase functions:config:set accounts.uchoose.0.account=TOSHL_UOB_ACCOUNT_ID_1
 
 firebase functions:config:set toshl.token="YOUR_TOSHL_TOKEN"
 npm run deploy

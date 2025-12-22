@@ -10,6 +10,7 @@ import {KTCExtractor} from './extractor/ktc.extractor';
 import {TTBExtractor} from "./extractor/ttb.extractor";
 import {UOBExtractor} from "./extractor/uob.extractor";
 import {MakeByKPlusExtractor} from './extractor/make-by-kplus.extractor';
+import { UChooseExtractor } from './extractor/uchoose.extractor';
 
 admin.initializeApp();
 
@@ -82,6 +83,7 @@ const ktcFn = createRequestFunction('KTC', new KTCExtractor(accountConfigs.ktc))
 const ttbFn = createRequestFunction('TTB', new TTBExtractor(accountConfigs.ttb));
 const makeFn = createRequestFunction('MAKE By KPlus', new MakeByKPlusExtractor(accountConfigs.make_by_kplus));
 const uobFn = createRequestFunction('UOB', new UOBExtractor(accountConfigs.uob));
+const uchooseFn = createRequestFunction('UChoose', new UChooseExtractor(accountConfigs.uchoose));
 
 export const api = functions.https.onRequest((request, response) => {
     switch (request.path) {
@@ -101,6 +103,8 @@ export const api = functions.https.onRequest((request, response) => {
             return ttbFn(request, response);
         case '/uob':
             return uobFn(request, response);
+        case '/uchoose':
+            return uchooseFn(request, response);
         default: break;
     }
     response.send(JSON.stringify({
