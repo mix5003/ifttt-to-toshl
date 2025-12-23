@@ -61,4 +61,18 @@ describe('UChoose Extractor', () => {
       category: 'Uncategorized'
     });
   });
+
+  it('should return correct value from cashback transaction transaction', () => {
+    const result = extractor.extract('CARD BENEFIT [KRUNGSRI NOW PLATINUM CREDIT CARD] คุณได้รับเครดิตเงินคืน 25.00 บาท จากรายการ เครดิตเงินคืน 5% หมวดออนไลน์ ผ่านบัตรเครดิต Krungsri NOW จากยอดใช้จ่ายที่ PAYPAL *YOSTAR วันที่ 23/12/2025');
+    // TODO: should i do it?
+    // expect(result).to.contain({
+    //   accountId: "1234",
+    //   amount: -10.10,
+    //   type: 'EXPENSE',
+    //   currency: 'THB',
+    //   category: 'Uncategorized'
+    // });
+  });
+
+  
 });
