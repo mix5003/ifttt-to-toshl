@@ -19,10 +19,10 @@ describe('UChoose Extractor', () => {
   });
 
   it('should return correct value from expense transaction USD currency transaction', () => {
-    const result = extractor.extract('SPENDING [KRUNGSRI NOW PLATINUM CREDIT CARD] ขอบคุณที่ใช้บัตร X-9210@XXXXX ยอด 10.10 ดอลลาร์สหรัฐ');
+    const result = extractor.extract('SPENDING [KRUNGSRI NOW PLATINUM CREDIT CARD] ขอบคุณที่ใช้บัตร X-9210@PAYPAL *YOSTAR ยอด 4.99 ดอลลาร์สหรัฐ');
     expect(result).to.contain({
       accountId: "1234",
-      amount: -10.10,
+      amount: -4.99,
       type: 'EXPENSE',
       currency: 'USD',
       category: 'Uncategorized'

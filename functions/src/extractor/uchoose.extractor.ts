@@ -21,7 +21,7 @@ export class UChooseExtractor implements TransactionExtractor {
 
         if(text.includes('ขอบคุณที่ใช้บัตร')){
             if(text.includes('ดอลลาร์สหรัฐ')){
-                const result = text.match(/ขอบคุณที่ใช้บัตร\s+X-[0-9]{4}@XXXXX\s+ยอด\s+([-.,0-9]+)\s+ดอลลาร์สหรัฐ/);
+                const result = text.match(/ขอบคุณที่ใช้บัตร\s+X-[0-9]{4}@.*\s+ยอด\s+([-.,0-9]+)\s+ดอลลาร์สหรัฐ/);
                 if (result) {
                     return {
                         accountId: accountId,
@@ -32,7 +32,7 @@ export class UChooseExtractor implements TransactionExtractor {
                     }
                 }
             }else if(text.includes('เยน')){
-                const result = text.match(/ขอบคุณที่ใช้บัตร\s+X-[0-9]{4}@XXXXX\s+ยอด\s+([-.,0-9]+)\s+เยน/);
+                const result = text.match(/ขอบคุณที่ใช้บัตร\s+X-[0-9]{4}@.*\s+ยอด\s+([-.,0-9]+)\s+เยน/);
                 if (result) {
                     return {
                         accountId: accountId,
@@ -43,7 +43,7 @@ export class UChooseExtractor implements TransactionExtractor {
                     }
                 }
             }else{
-                   const result = text.match(/ขอบคุณที่ใช้บัตร\s+X-[0-9]{4}@XXXXX\s+ยอด\s+([-.,0-9]+)\s+/);
+                   const result = text.match(/ขอบคุณที่ใช้บัตร\s+X-[0-9]{4}@.*\s+ยอด\s+([-.,0-9]+)\s+/);
                 if (result) {
                     return {
                         accountId: accountId,
