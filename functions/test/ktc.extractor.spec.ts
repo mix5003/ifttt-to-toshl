@@ -38,8 +38,8 @@ describe('KTC Extractor', () => {
       currency: 'THB',
       category: 'Travel',
     });
-    expect(result.tags).to.have.lengthOf(1);
-    expect(result.tags[0]).to.eq('MRT');
+    expect(result?.tags).to.have.lengthOf(1);
+    expect(result?.tags).to.have.members(['MRT']);
   });
 
   it('should return correct value from BTS transaction via credit card', () => {
@@ -51,8 +51,8 @@ describe('KTC Extractor', () => {
       currency: 'THB',
       category: 'Travel',
     });
-    expect(result.tags).to.have.lengthOf(1);
-    expect(result.tags[0]).to.eq('BTS');
+    expect(result?.tags).to.have.lengthOf(1);
+    expect(result?.tags).to.have.members(['BTS']);
   });
 
   it('should return correct value from BTS-2 transaction via credit card', () => {
@@ -64,8 +64,8 @@ describe('KTC Extractor', () => {
       currency: 'THB',
       category: 'Travel',
     });
-    expect(result.tags).to.have.lengthOf(1);
-    expect(result.tags[0]).to.eq('BTS');
+    expect(result?.tags).to.have.lengthOf(1);
+    expect(result?.tags).to.have.members(['BTS']);
   });
 
   it('should return correct value from Bus transaction via credit card', () => {
@@ -77,7 +77,7 @@ describe('KTC Extractor', () => {
       currency: 'THB',
       category: 'Travel',
     });
-    expect(result.tags).to.have.lengthOf(1);
-    expect(result.tags[0]).to.eq('Bus');
+    expect(result?.tags).to.have.lengthOf(1);
+    expect(result?.tags).to.have.members(['Bus']);
   });
 });

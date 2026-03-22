@@ -1,104 +1,100 @@
 import Transaction from "./transaction";
-import * as admin from 'firebase-admin';
-import * as request from 'request-promise';
-import * as functions from 'firebase-functions';
+import { Firestore } from "firebase-admin/firestore";
 
-const accessToken = functions.config().toshl ? functions.config().toshl.token : null;
+export class ToshlClient {
+    constructor(private token: string){
+    }
 
-export const refreshCacheData = async function(db: admin.firestore.Firestore){
-    const categories = await request({
-        method:"GET",
-        url: "https://api.toshl.com/categories?per_page=500",
-        headers: {
-            "Authorization": `Bearer ${accessToken}`
+    async refreshCacheData(db: Firestore){
+        const categories = await fetch("https://api.toshl.com/categories?per_page=500", {
+            headers: {
+                "Authorization": `Bearer ${this.token}`
+            }
+        }).then(res => res.json());
+
+        categories.map((cat: {id: number, [key: string]: any}) => {
+            db.collection('categories').doc(`${cat.id}`).set(cat);
+        });
+
+        const tags = await fetch("https://api.toshl.com/tags?per_page=500", {
+            headers: {
+                "Authorization": `Bearer ${this.token}`
+            }
+        }).then(res => res.json());
+
+        tags.map((tag:  {id: number, [key: string]: any}): any => {
+            db.collection('tags').doc(`${tag.id}`).set(tag);
+        });
+    }
+
+    async createTransaction(account: string, transaction: Transaction, db: Firestore) {
+        let transactionTags: string[] = [];
+        if(transaction.tags){
+            const tags = await db.collection('tags').get(); 
+            transactionTags = transaction.tags
+                .map(tag => {
+                    return tags.docs.find(t => t.data().name === tag && t.data().type === transaction.type.toLowerCase());
+                })
+                .filter(t => !! t)
+                .map(t => t.id);
         }
-    });
 
-    JSON.parse(categories).map(cat => {
-        db.collection('categories').doc(cat.id).set(cat);
-    });
+        console.log('START GET Categories');
+        const categories = await db.collection('categories').get();
+        console.log('END GET Categories');
 
-    const tags = await request({
-        method:"GET",
-        url: "https://api.toshl.com/tags?per_page=500",
-        headers: {
-            "Authorization": `Bearer ${accessToken}`
+        const category = categories.docs
+            .find(c => c.data().name === transaction.category && c.data().type === transaction.type.toLowerCase());
+        if(!category){
+            throw new Error("No categories")
         }
-    });
 
-    JSON.parse(tags).map(tag => {
-        db.collection('tags').doc(tag.id).set(tag);
-    });
+        const categoryId = category.id;
+        const currency = transaction.currency || 'THB';
+
+        const currentDate = (new Date((+new Date) + (7 * 3600 * 1000)));
+        const fullMonth = currentDate.getMonth() + 1 < 10 ? `0${currentDate.getMonth() + 1}` : `${currentDate.getMonth() + 1}`;
+        const fullDate = currentDate.getDate() + 1 < 10 ? `0${currentDate.getDate()}` : `${currentDate.getDate()}`;
+
+        const entry = {
+            amount: transaction.amount,
+            currency: {
+                code: currency
+            },
+            date: `${currentDate.getFullYear()}-${fullMonth}-${fullDate}`,
+            desc: transaction.detail,
+            account: account,
+            category: categoryId,
+            tags: transactionTags,
+        };
+
+        console.log(JSON.stringify(entry));
+
+        const response = await fetch('https://api.toshl.com/entries', {
+            method:"POST",
+            headers: {
+                'Content-type': 'application/json',
+                'Authorization': `Bearer ${this.token}`,
+            },
+            redirect: 'manual',
+            body: JSON.stringify(entry),
+        });
+
+        console.log(response.status);
+
+        if(response.status != 201){
+            const body = await response.text()
+            throw new Error(response.status + " : "+body);
+        }
+
+        const entryResponse = await fetch('https://api.toshl.com/'+response.headers.get('location'), {
+            method:"GET",
+            headers: {
+                'Content-type': 'application/json',
+                'Authorization': `Bearer ${this.token}`
+            },
+        }).then(res => res.json());
+
+        return entryResponse;
+    }
 }
-
-export const createTransaction = async function(account: string, transaction: Transaction, db: admin.firestore.Firestore) {
-    let transactionTags = [];
-    if(transaction.tags){
-        const tags = await db.collection('tags').get(); 
-        transactionTags = transaction.tags
-            .map(tag => {
-                return tags.docs.find(t => t.data().name === tag && t.data().type === transaction.type.toLowerCase());
-            })
-            .filter(t => !! t)
-            .map(t => t.id);
-    }
-
-    console.log('START GET Categories');
-    const categories = await db.collection('categories').get();
-    console.log('END GET Categories');
-
-    const categoryId = categories.docs
-        .find(c => c.data().name === transaction.category && c.data().type === transaction.type.toLowerCase())
-        .id;
-
-    const currency = transaction.currency || 'THB';
-
-    const currentDate = (new Date((+new Date) + (7 * 3600 * 1000)));
-    const fullMonth = currentDate.getMonth() + 1 < 10 ? `0${currentDate.getMonth() + 1}` : `${currentDate.getMonth() + 1}`;
-    const fullDate = currentDate.getDate() + 1 < 10 ? `0${currentDate.getDate()}` : `${currentDate.getDate()}`;
-
-    const entry = {
-        amount: transaction.amount,
-        currency: {
-            code: currency
-        },
-        date: `${currentDate.getFullYear()}-${fullMonth}-${fullDate}`,
-        desc: transaction.detail,
-        account: account,
-        category: categoryId,
-        tags: transactionTags,
-    };
-
-    console.log(JSON.stringify(entry));
-
-    const response = await request({
-        url: 'https://api.toshl.com/entries',
-        method:"POST",
-        headers: {
-            'Content-type': 'application/json',
-            'Authorization': `Bearer ${accessToken}`
-        },
-        body: JSON.stringify(entry),
-        
-        followRedirect: false,
-        followAllRedirects: false,
-        resolveWithFullResponse: true,
-    });
-
-    console.log(response.statusCode);
-
-    if(response.statusCode != 201){
-        throw new Error(response.statusCode + " : "+response.body);
-    }
-
-    const entryResponse = await request({
-        url: 'https://api.toshl.com/'+response.headers.location,
-        method:"GET",
-        headers: {
-            'Content-type': 'application/json',
-            'Authorization': `Bearer ${accessToken}`
-        },
-    });
-
-    return JSON.parse(entryResponse);
-};

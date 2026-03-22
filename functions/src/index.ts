@@ -1,6 +1,8 @@
-import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
-import {createTransaction, refreshCacheData} from './toshl';
+import { initializeApp } from "firebase-admin/app";
+import { getFirestore } from "firebase-admin/firestore";
+import { getRemoteConfig } from "firebase-admin/remote-config";
+import { HttpsFunction, onRequest } from 'firebase-functions/https';
+import {ToshlClient} from './toshl';
 import {TransactionExtractor} from './extractor/extractor';
 import {KPlusExtractor} from './extractor/k-plus.extractor';
 import {TrueMoneyExtractor} from './extractor/true-money.extractor';
@@ -12,17 +14,21 @@ import {UOBExtractor} from "./extractor/uob.extractor";
 import {MakeByKPlusExtractor} from './extractor/make-by-kplus.extractor';
 import { UChooseExtractor } from './extractor/uchoose.extractor';
 
-admin.initializeApp();
+let cacheHandler : {[key: string]: HttpsFunction}|null = null;
 
-const db = admin.firestore();
+const firebaseApp = initializeApp();
+
+const rc = getRemoteConfig(firebaseApp);
+
+const db = getFirestore(firebaseApp);
 db.settings({timestampsInSnapshots: true});
 const collectionRef = db.collection('raws');
 
 const TTL_NORMAL = 1 * 365 * 24 * 60 * 60 * 1000; // 1 Year
 const TTL_CREATED_ENTRY = 3 * 365 * 24 * 60 * 60 * 1000; // 3 Year
 
-const createRequestFunction = (type: string, extractor: TransactionExtractor) => {
-    return functions.https.onRequest(async (request, response) => {
+const createRequestFunction = (type: string, toshlClient: ToshlClient, extractor: TransactionExtractor) => {
+    return onRequest(async (request, response) => {
         const refId = (new Date).toISOString();
         const expireAt = (new Date((new Date).getTime() + TTL_NORMAL));
 
@@ -37,7 +43,7 @@ const createRequestFunction = (type: string, extractor: TransactionExtractor) =>
             const transaction = extractor.extract(request.body.toString());
             console.log('Transaction', transaction);
             if(transaction){
-                createTransaction(transaction.accountId, transaction, db)
+                toshlClient.createTransaction(transaction.accountId, transaction, db)
                     .then((entry) => {
                         const expireAt = (new Date((new Date).getTime() + TTL_CREATED_ENTRY));
 
@@ -68,45 +74,52 @@ const createRequestFunction = (type: string, extractor: TransactionExtractor) =>
     });
 };
 
-export const refreshCache = functions.https.onRequest((request, response) => {
-    refreshCacheData(db).then(() => {
+export const refreshCache = onRequest(async (request, response) => {
+    const template = await rc.getServerTemplate();
+    const config = template.evaluate();
+    const allConfig = JSON.parse(config.getString("config"));
+    const client = new ToshlClient(allConfig['toshl']['token'])
+
+    client.refreshCacheData(db).then(() => {
         response.send('COMPLETED');
     })
 });
 
-const accountConfigs = functions.config().accounts || {};
-const kplusFn = createRequestFunction('K Plus', new KPlusExtractor(accountConfigs.kplus));
-const trueMoneyFn = createRequestFunction('TrueMoney', new TrueMoneyExtractor(accountConfigs.truemoney));
-const myMoLottoFn = createRequestFunction('MyMo', new MyMoExtractor(accountConfigs.mymo));
-const ktbFn = createRequestFunction('KTB', new KTBExtractor(accountConfigs.ktb));
-const ktcFn = createRequestFunction('KTC', new KTCExtractor(accountConfigs.ktc));
-const ttbFn = createRequestFunction('TTB', new TTBExtractor(accountConfigs.ttb));
-const makeFn = createRequestFunction('MAKE By KPlus', new MakeByKPlusExtractor(accountConfigs.make_by_kplus));
-const uobFn = createRequestFunction('UOB', new UOBExtractor(accountConfigs.uob));
-const uchooseFn = createRequestFunction('UChoose', new UChooseExtractor(accountConfigs.uchoose));
-
-export const api = functions.https.onRequest((request, response) => {
-    switch (request.path) {
-        case '/kplus':
-            return kplusFn(request, response);
-        case '/make-by-kplus':
-            return makeFn(request, response);
-        case '/trueMoney':
-            return trueMoneyFn(request, response);
-        case '/mymo-lotto':
-            return myMoLottoFn(request, response);
-        case '/ktb':
-            return ktbFn(request, response);
-        case '/ktc':
-            return ktcFn(request, response);
-        case '/ttb':
-            return ttbFn(request, response);
-        case '/uob':
-            return uobFn(request, response);
-        case '/uchoose':
-            return uchooseFn(request, response);
-        default: break;
+async function getHandler() {
+    if(cacheHandler){
+        return cacheHandler;
     }
+
+    const template = await rc.getServerTemplate();
+
+    const config = template.evaluate();
+    const allConfig = JSON.parse(config.getString("config"));
+    const accountConfigs = allConfig['accounts'];
+    const client = new ToshlClient(allConfig['toshl']['token'])
+
+
+
+    cacheHandler = {
+        '/kplus':           createRequestFunction('K Plus', client, new KPlusExtractor(accountConfigs.kplus)),
+        '/trueMoney':       createRequestFunction('TrueMoney', client, new TrueMoneyExtractor(accountConfigs.truemoney)),
+        '/mymo-lotto':      createRequestFunction('MyMo', client, new MyMoExtractor(accountConfigs.mymo)),
+        '/ktb':             createRequestFunction('KTB', client, new KTBExtractor(accountConfigs.ktb)),
+        '/ktc':             createRequestFunction('KTC', client, new KTCExtractor(accountConfigs.ktc)),
+        '/ttb':             createRequestFunction('TTB', client, new TTBExtractor(accountConfigs.ttb)),
+        '/make-by-kplus':   createRequestFunction('MAKE By KPlus', client, new MakeByKPlusExtractor(accountConfigs.make_by_kplus)),
+        '/uob':             createRequestFunction('UOB', client, new UOBExtractor(accountConfigs.uob)),
+        '/uchoose':         createRequestFunction('UChoose', client, new UChooseExtractor(accountConfigs.uchoose)),
+    }
+
+    return cacheHandler;
+}
+
+export const api = onRequest(async (request, response) => {
+    const handler = await getHandler();
+    if(request.path in handler){
+        return handler[request.path](request, response);
+    }
+
     response.send(JSON.stringify({
         params: request.params,
         path: request.path

@@ -5,7 +5,7 @@ export class UChooseExtractor implements TransactionExtractor {
     constructor(private cardMap: { digit: string, account: string }[]) {
     }
 
-    getAccountId(text: string): string {
+    getAccountId(text: string): string | null {
         const card = this.cardMap.find(v => text.indexOf('X-' + v.digit) !== -1);
         if (card) {
             return card.account;
